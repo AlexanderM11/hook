@@ -4,42 +4,52 @@ import randomName from 'random-name';
 import {
     Switch,
     Route,
-    Link
+    Link,
+    withRouter
 } from "react-router-dom";
 import User from './User';
 
-export default function Users() {
+
+function Users({ history }) {
     const [users, setUsers] = useState([]);
-    useEffect(()=>{
-        let userArray=[];
-        for(let i=0;i<40;i++){
+    useEffect(() => {
+        let userArray = [];
+        for (let i = 0; i < 40; i++) {
             userArray.push(
                 {
-                    id:i,
+                    id: i,
                     name: randomName.first()
                 }
             )
         }
         setUsers(userArray);
-    },[])
-    function handleUserClick(user){
-        console.log(user)
+    }, [])
+    function handleUserClick(user) {
+        history.push(`/users/${user.id}`)
     }
     return (
-        <div>
-            <button onClick={console.log(users)}>ghh</button>
-            <ul>
-                {users.map(user=>(
-                    <li key={user.id} onClick={()=>handleUserClick(user)}>{user.name}</li>
-                ))
+        <div style={{display: 'flex'}}>
+            <div style={{ flex: 1 }}>
+                <ul>
+                    {users.map(user => (
+                        <div>
+                            <li key={user.id} onClick={() => handleUserClick(user)}>{user.name}</li>
+                        </div>
+                    ))
 
-                }
-            </ul>
-            <Switch>
-                <Route path="/users/:id">
-                    <User />
-                </Route>
-            </Switch>
+                    }
+                </ul>
+            </div>
+            <div style={{ flex: 1 }}>
+                <Switch>
+                    <Route path="/users/:id">
+                        <User users={users} />
+                    </Route>
+                </Switch>
+            </div>
         </div>
     )
 }
+export default withRouter(Users);
+
+
